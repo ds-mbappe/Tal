@@ -1,3 +1,4 @@
+import React from "react";
 import AuthProvider from "./AuthProvider";
 import Router from "./Navigation/Router";
 

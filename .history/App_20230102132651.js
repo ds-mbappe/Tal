@@ -1,10 +1,13 @@
+import React from "react";
 import AuthProvider from "./AuthProvider";
 import Router from "./Navigation/Router";
 
-export default function App() {
+const App = () => {
   return (
     <AuthProvider>
       <Router />
     </AuthProvider>
   );
-}
+};
+
+export default App;

@@ -1,7 +1,7 @@
 import AuthProvider from "./AuthProvider";
 import Router from "./Navigation/Router";
 
-export default function App() {
+export function App() {
   return (
     <AuthProvider>
       <Router />

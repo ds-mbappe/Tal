@@ -1,6 +1,5 @@
 {
   "expo": {
-    "scheme": "talcs",
     "name": "Tal",
     "slug": "Tal",
     "version": "1.0.0",
@@ -8,19 +7,8 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/accueil.png",
+      "image": "./assets/acueil.png",
       "resizeMode": "contain"
-    },
-    "plugins": [
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "TalCS a besoin d'accéder à votre galerie photo"
-        }
-      ]
-    ],
-    "packagerOpts": {
-      "sourceExts": ["cjs"]
     },
     "updates": {
       "fallbackToCacheTimeout": 0
