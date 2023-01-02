@@ -11,7 +11,6 @@ import {
   ScrollView,
 } from "react-native";
 import { sendPasswordResetEmail } from "firebase/auth";
-import * as Icon from "react-native-feather";
 import { auth } from "../firebase";
 import { useState } from "react";
 

@@ -80,8 +80,15 @@ const Login = ({ navigation }) => {
           borderBottomWidth: 1,
         }}
       >
-        <View style={{ width: 25, height: 25, marginEnd: 10 }}></View>
-        <Text style={{ fontWeight: "bold", fontSize: 16 }}>Connexion</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon.ChevronLeft
+            style={{ marginStart: 10 }}
+            width={25}
+            height={25}
+            stroke="#F7941D"
+          />
+        </TouchableOpacity>
+        <Text style={{ fontWeight: "bold", fontSize: 16 }}>Paramètres</Text>
         <View style={{ width: 25, height: 25, marginEnd: 10 }}></View>
       </View>
       <ScrollView

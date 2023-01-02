@@ -80,9 +80,7 @@ const Login = ({ navigation }) => {
           borderBottomWidth: 1,
         }}
       >
-        <View style={{ width: 25, height: 25, marginEnd: 10 }}></View>
         <Text style={{ fontWeight: "bold", fontSize: 16 }}>Connexion</Text>
-        <View style={{ width: 25, height: 25, marginEnd: 10 }}></View>
       </View>
       <ScrollView
         contentContainerStyle={{
