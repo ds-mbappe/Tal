@@ -99,37 +99,35 @@ const Profile = ({ route, navigation }) => {
     );
   };
 
-  const likePost = async (postId) => {
-    try {
-      const postDocRef = doc(firestore, "posts", postId);
-      const postDocSnapshot = await getDoc(postDocRef);
-      if (postDocSnapshot.exists()) {
-        if (postDocSnapshot.data().postLikes.includes(auth.currentUser.uid)) {
-          try {
-            await updateDoc(postDocRef, {
-              postLikes: arrayRemove(auth.currentUser.uid),
-            });
-            getData();
-          } catch (error) {
-            console.log(error);
-          }
-        } else {
-          try {
-            await updateDoc(postDocRef, {
-              postLikes: arrayUnion(auth.currentUser.uid),
-            });
-            getData();
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      } else {
-        console.log("The document does not exist !");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const likePost = async (postId) => {
+  //   try {
+  //     const postDocRef = doc(firestore, "posts", postId);
+  //     const postDocSnapshot = await getDoc(postDocRef);
+  //     if (postDocSnapshot.exists()) {
+  //       if (postDocSnapshot.data().postLikes.includes(auth.currentUser.uid)) {
+  //         try {
+  //           await updateDoc(postDocRef, {
+  //             postLikes: arrayRemove(auth.currentUser.uid),
+  //           });
+  //         } catch (error) {
+  //           console.log(error);
+  //         }
+  //       } else {
+  //         try {
+  //           await updateDoc(postDocRef, {
+  //             postLikes: arrayUnion(auth.currentUser.uid),
+  //           });
+  //         } catch (error) {
+  //           console.log(error);
+  //         }
+  //       }
+  //     } else {
+  //       console.log("The document does not exist !");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const dislikePost = async (postId) => {
     try {
@@ -143,7 +141,6 @@ const Profile = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postDislikes: arrayRemove(auth.currentUser.uid),
             });
-            getData();
           } catch (error) {
             console.log(error);
           }
@@ -152,7 +149,6 @@ const Profile = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postDislikes: arrayUnion(auth.currentUser.uid),
             });
-            getData();
           } catch (error) {
             console.log(error);
           }
@@ -206,6 +202,13 @@ const Profile = ({ route, navigation }) => {
 
   const FirstRoute = () => {
     const firstReference = useRef(null);
+
+    const likePost = (postId) => {
+      setLiked(!liked);
+      console.log(postId + " " + liked);
+    };
+
+    const [liked, setLiked] = useState(false);
 
     useScrollToTop(firstReference);
 

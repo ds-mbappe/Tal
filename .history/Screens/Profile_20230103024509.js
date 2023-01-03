@@ -143,7 +143,6 @@ const Profile = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postDislikes: arrayRemove(auth.currentUser.uid),
             });
-            getData();
           } catch (error) {
             console.log(error);
           }
@@ -152,7 +151,6 @@ const Profile = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postDislikes: arrayUnion(auth.currentUser.uid),
             });
-            getData();
           } catch (error) {
             console.log(error);
           }
@@ -207,7 +205,7 @@ const Profile = ({ route, navigation }) => {
   const FirstRoute = () => {
     const firstReference = useRef(null);
 
-    useScrollToTop(firstReference);
+    //useScrollToTop(firstReference);
 
     return (
       <FlatList
@@ -221,7 +219,7 @@ const Profile = ({ route, navigation }) => {
         }
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{}}
-        ref={firstReference}
+        ref={reference}
         data={connectedUserPosts}
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={() => {

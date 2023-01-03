@@ -143,7 +143,6 @@ const Profile = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postDislikes: arrayRemove(auth.currentUser.uid),
             });
-            getData();
           } catch (error) {
             console.log(error);
           }
@@ -152,7 +151,6 @@ const Profile = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postDislikes: arrayUnion(auth.currentUser.uid),
             });
-            getData();
           } catch (error) {
             console.log(error);
           }

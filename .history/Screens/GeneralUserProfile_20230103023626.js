@@ -331,6 +331,16 @@ const GeneralUserProfile = ({ route, navigation }) => {
     extrapolate: "clamp",
   });
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    getData();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  });
+
   const followOrUnfollowUser = async (userId) => {
     if (isFollowing == false) {
       // If isFollowing is false then Follow the user

@@ -302,6 +302,7 @@ const Feed = ({ route, navigation }) => {
   };
 
   const likePost = async (postId) => {
+    onRefresh();
     try {
       const postDocRef = doc(firestore, "posts", postId);
       const postDocSnapshot = await getDoc(postDocRef);
@@ -311,7 +312,6 @@ const Feed = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postLikes: arrayRemove(auth.currentUser.uid),
             });
-            getPostData();
           } catch (error) {
             console.log(error);
           }
@@ -320,7 +320,6 @@ const Feed = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postLikes: arrayUnion(auth.currentUser.uid),
             });
-            getPostData();
           } catch (error) {
             console.log(error);
           }
@@ -334,6 +333,8 @@ const Feed = ({ route, navigation }) => {
   };
 
   const dislikePost = async (postId) => {
+    onRefresh();
+
     try {
       const postDocRef = doc(firestore, "posts", postId);
       const postDocSnapshot = await getDoc(postDocRef);
@@ -345,7 +346,6 @@ const Feed = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postDislikes: arrayRemove(auth.currentUser.uid),
             });
-            getPostData();
           } catch (error) {
             console.log(error);
           }
@@ -354,7 +354,6 @@ const Feed = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postDislikes: arrayUnion(auth.currentUser.uid),
             });
-            getPostData();
           } catch (error) {
             console.log(error);
           }

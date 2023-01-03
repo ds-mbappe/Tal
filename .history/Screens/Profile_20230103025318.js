@@ -543,6 +543,8 @@ const Profile = ({ route, navigation }) => {
     }
   };
 
+  useScrollToTop(reference);
+
   // useFocusEffect(
   //   useCallback(() => {
   //   }, [])

@@ -311,7 +311,7 @@ const Feed = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postLikes: arrayRemove(auth.currentUser.uid),
             });
-            getPostData();
+            onRefresh();
           } catch (error) {
             console.log(error);
           }
@@ -320,7 +320,7 @@ const Feed = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postLikes: arrayUnion(auth.currentUser.uid),
             });
-            getPostData();
+            onRefresh();
           } catch (error) {
             console.log(error);
           }
@@ -345,7 +345,7 @@ const Feed = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postDislikes: arrayRemove(auth.currentUser.uid),
             });
-            getPostData();
+            onRefresh();
           } catch (error) {
             console.log(error);
           }
@@ -354,7 +354,7 @@ const Feed = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postDislikes: arrayUnion(auth.currentUser.uid),
             });
-            getPostData();
+            onRefresh();
           } catch (error) {
             console.log(error);
           }

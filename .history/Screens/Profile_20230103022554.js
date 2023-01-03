@@ -109,7 +109,6 @@ const Profile = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postLikes: arrayRemove(auth.currentUser.uid),
             });
-            getData();
           } catch (error) {
             console.log(error);
           }
@@ -118,7 +117,6 @@ const Profile = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postLikes: arrayUnion(auth.currentUser.uid),
             });
-            getData();
           } catch (error) {
             console.log(error);
           }
@@ -143,7 +141,6 @@ const Profile = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postDislikes: arrayRemove(auth.currentUser.uid),
             });
-            getData();
           } catch (error) {
             console.log(error);
           }
@@ -152,7 +149,6 @@ const Profile = ({ route, navigation }) => {
             await updateDoc(postDocRef, {
               postDislikes: arrayUnion(auth.currentUser.uid),
             });
-            getData();
           } catch (error) {
             console.log(error);
           }
@@ -237,6 +233,8 @@ const Profile = ({ route, navigation }) => {
         }}
         ListEmptyComponent={emptyListElement}
         renderItem={({ item }) => {
+          const [liked, setLiked] = useState(false);
+
           return (
             <View
               style={{
