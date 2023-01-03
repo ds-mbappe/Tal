@@ -43,7 +43,9 @@ const Feed = ({ route, navigation }) => {
 
   const [featuredImage, setFeaturedImage] = useState("");
 
-  const PostItem = ({ item }) => {
+  const postItem = ({ item }) => {
+    const [isLiked, setIsLiked] = useState(false);
+
     return (
       <View
         style={{
@@ -217,9 +219,7 @@ const Feed = ({ route, navigation }) => {
     );
   };
 
-  const EmptyListElement = ({ item }) => {
-    const [isLiked, setIsLiked] = useState(false);
-
+  const emptyListElement = () => {
     return (
       <View
         style={{
@@ -441,8 +441,8 @@ const Feed = ({ route, navigation }) => {
             ></View>
           );
         }}
-        ListEmptyComponent={EmptyListElement}
-        renderItem={PostItem}
+        ListEmptyComponent={emptyListElement}
+        renderItem={postItem}
       />
       <StatusBar style="dark" />
     </SafeAreaView>

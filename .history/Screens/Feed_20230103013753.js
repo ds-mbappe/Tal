@@ -44,6 +44,9 @@ const Feed = ({ route, navigation }) => {
   const [featuredImage, setFeaturedImage] = useState("");
 
   const PostItem = ({ item }) => {
+    const [isLiked, setIsLiked] = useState(false);
+    const [isDisliked, setIsDisliked] = useState(false);
+
     return (
       <View
         style={{
@@ -99,7 +102,6 @@ const Feed = ({ route, navigation }) => {
                   borderRadius: 10,
                   overflow: "hidden",
                 }}
-                activeOpacity={1}
                 onPress={() => toggleModalAndSetImage(item)}
               >
                 <Image
@@ -217,9 +219,7 @@ const Feed = ({ route, navigation }) => {
     );
   };
 
-  const EmptyListElement = ({ item }) => {
-    const [isLiked, setIsLiked] = useState(false);
-
+  const emptyListElement = () => {
     return (
       <View
         style={{
@@ -302,33 +302,33 @@ const Feed = ({ route, navigation }) => {
   };
 
   const likePost = async (postId) => {
-    try {
-      const postDocRef = doc(firestore, "posts", postId);
-      const postDocSnapshot = await getDoc(postDocRef);
-      if (postDocSnapshot.exists()) {
-        if (postDocSnapshot.data().postLikes.includes(auth.currentUser.uid)) {
-          try {
-            await updateDoc(postDocRef, {
-              postLikes: arrayRemove(auth.currentUser.uid),
-            });
-          } catch (error) {
-            console.log(error);
-          }
-        } else {
-          try {
-            await updateDoc(postDocRef, {
-              postLikes: arrayUnion(auth.currentUser.uid),
-            });
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      } else {
-        console.log("The document does not exist !");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    // try {
+    //   const postDocRef = doc(firestore, "posts", postId);
+    //   const postDocSnapshot = await getDoc(postDocRef);
+    //   if (postDocSnapshot.exists()) {
+    //     if (postDocSnapshot.data().postLikes.includes(auth.currentUser.uid)) {
+    //       try {
+    //         await updateDoc(postDocRef, {
+    //           postLikes: arrayRemove(auth.currentUser.uid),
+    //         });
+    //       } catch (error) {
+    //         console.log(error);
+    //       }
+    //     } else {
+    //       try {
+    //         await updateDoc(postDocRef, {
+    //           postLikes: arrayUnion(auth.currentUser.uid),
+    //         });
+    //       } catch (error) {
+    //         console.log(error);
+    //       }
+    //     }
+    //   } else {
+    //     console.log("The document does not exist !");
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   const dislikePost = async (postId) => {
@@ -441,7 +441,7 @@ const Feed = ({ route, navigation }) => {
             ></View>
           );
         }}
-        ListEmptyComponent={EmptyListElement}
+        ListEmptyComponent={emptyListElement}
         renderItem={PostItem}
       />
       <StatusBar style="dark" />

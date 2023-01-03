@@ -217,7 +217,7 @@ const Feed = ({ route, navigation }) => {
     );
   };
 
-  const EmptyListElement = ({ item }) => {
+  const emptyListElement = () => {
     const [isLiked, setIsLiked] = useState(false);
 
     return (
@@ -441,7 +441,7 @@ const Feed = ({ route, navigation }) => {
             ></View>
           );
         }}
-        ListEmptyComponent={EmptyListElement}
+        ListEmptyComponent={emptyListElement}
         renderItem={PostItem}
       />
       <StatusBar style="dark" />

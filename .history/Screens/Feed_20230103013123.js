@@ -43,7 +43,154 @@ const Feed = ({ route, navigation }) => {
 
   const [featuredImage, setFeaturedImage] = useState("");
 
-  const PostItem = ({ item }) => {
+  const getPostData = async () => {
+    try {
+      let posts = [];
+      const postDataDocRef = collection(firestore, "posts");
+      const postDataQuery = query(
+        postDataDocRef,
+        orderBy("postPublishedTime", "desc")
+      );
+      const querySnapshot = await getDocs(postDataQuery);
+      querySnapshot.forEach((post) => {
+        posts.push(post.data());
+      });
+      setPosts(posts);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const toggleModal = () => {
+    setModalVisibility(!modalVisibility);
+  };
+
+  const toggleModalAndSetImage = (imageUrl) => {
+    toggleModal();
+    setFeaturedImage(imageUrl);
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    getPostData();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  });
+
+  const goToCommentariesPage = async (postId) => {
+    // Get all comments from Firestore and store them
+    try {
+      let comments = [];
+      const commentDataDocRef = collection(firestore, "comments");
+      const commentDataQuery = query(
+        commentDataDocRef,
+        where("commentRelatedPostId", "==", postId),
+        orderBy("commentPublishedTime", "desc")
+      );
+      await getDocs(commentDataQuery).then(async (querySnapshot) => {
+        querySnapshot.forEach((post) => {
+          comments.push(post.data());
+        });
+        await AsyncStorage.setItem("@postId", postId).then(() => {
+          navigation.navigate("CommentPage", { postComments: comments });
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const goToGeneralUserProfile = (userId) => {
+    if (userId == auth.currentUser.uid) {
+      navigation.navigate("ProfileStack", { screen: "Profile" });
+    } else {
+      navigation.push("GeneralUserProfile", { userId: userId });
+    }
+  };
+
+  const likePost = async (postId) => {
+    // try {
+    //   const postDocRef = doc(firestore, "posts", postId);
+    //   const postDocSnapshot = await getDoc(postDocRef);
+    //   if (postDocSnapshot.exists()) {
+    //     if (postDocSnapshot.data().postLikes.includes(auth.currentUser.uid)) {
+    //       try {
+    //         await updateDoc(postDocRef, {
+    //           postLikes: arrayRemove(auth.currentUser.uid),
+    //         });
+    //       } catch (error) {
+    //         console.log(error);
+    //       }
+    //     } else {
+    //       try {
+    //         await updateDoc(postDocRef, {
+    //           postLikes: arrayUnion(auth.currentUser.uid),
+    //         });
+    //       } catch (error) {
+    //         console.log(error);
+    //       }
+    //     }
+    //   } else {
+    //     console.log("The document does not exist !");
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  };
+
+  const dislikePost = async (postId) => {
+    try {
+      const postDocRef = doc(firestore, "posts", postId);
+      const postDocSnapshot = await getDoc(postDocRef);
+      if (postDocSnapshot.exists()) {
+        if (
+          postDocSnapshot.data().postDislikes.includes(auth.currentUser.uid)
+        ) {
+          try {
+            await updateDoc(postDocRef, {
+              postDislikes: arrayRemove(auth.currentUser.uid),
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        } else {
+          try {
+            await updateDoc(postDocRef, {
+              postDislikes: arrayUnion(auth.currentUser.uid),
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      } else {
+        console.log("The document does not exist !");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const sharePost = async (postId) => {
+    try {
+      const result = await Share.share({
+        message: postId,
+      });
+      // if (result.action === Share.sharedAction) {
+      //   if (result.activityType) {
+      //   } else {
+      //   }
+      // } else if (result.action === Share.dismissedAction) {
+      // }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const PostItem = () => {
+    const [isLiked, setIsLiked] = useState(false);
+    const [isDisliked, setIsDisliked] = useState(false);
+
     return (
       <View
         style={{
@@ -99,7 +246,6 @@ const Feed = ({ route, navigation }) => {
                   borderRadius: 10,
                   overflow: "hidden",
                 }}
-                activeOpacity={1}
                 onPress={() => toggleModalAndSetImage(item)}
               >
                 <Image
@@ -217,9 +363,7 @@ const Feed = ({ route, navigation }) => {
     );
   };
 
-  const EmptyListElement = ({ item }) => {
-    const [isLiked, setIsLiked] = useState(false);
-
+  const emptyListElement = () => {
     return (
       <View
         style={{
@@ -233,150 +377,6 @@ const Feed = ({ route, navigation }) => {
         <Text>Aucune publication pour le moment !</Text>
       </View>
     );
-  };
-
-  const getPostData = async () => {
-    try {
-      let posts = [];
-      const postDataDocRef = collection(firestore, "posts");
-      const postDataQuery = query(
-        postDataDocRef,
-        orderBy("postPublishedTime", "desc")
-      );
-      const querySnapshot = await getDocs(postDataQuery);
-      querySnapshot.forEach((post) => {
-        posts.push(post.data());
-      });
-      setPosts(posts);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const toggleModal = () => {
-    setModalVisibility(!modalVisibility);
-  };
-
-  const toggleModalAndSetImage = (imageUrl) => {
-    toggleModal();
-    setFeaturedImage(imageUrl);
-  };
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    getPostData();
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
-  });
-
-  const goToCommentariesPage = async (postId) => {
-    // Get all comments from Firestore and store them
-    try {
-      let comments = [];
-      const commentDataDocRef = collection(firestore, "comments");
-      const commentDataQuery = query(
-        commentDataDocRef,
-        where("commentRelatedPostId", "==", postId),
-        orderBy("commentPublishedTime", "desc")
-      );
-      await getDocs(commentDataQuery).then(async (querySnapshot) => {
-        querySnapshot.forEach((post) => {
-          comments.push(post.data());
-        });
-        await AsyncStorage.setItem("@postId", postId).then(() => {
-          navigation.navigate("CommentPage", { postComments: comments });
-        });
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const goToGeneralUserProfile = (userId) => {
-    if (userId == auth.currentUser.uid) {
-      navigation.navigate("ProfileStack", { screen: "Profile" });
-    } else {
-      navigation.push("GeneralUserProfile", { userId: userId });
-    }
-  };
-
-  const likePost = async (postId) => {
-    try {
-      const postDocRef = doc(firestore, "posts", postId);
-      const postDocSnapshot = await getDoc(postDocRef);
-      if (postDocSnapshot.exists()) {
-        if (postDocSnapshot.data().postLikes.includes(auth.currentUser.uid)) {
-          try {
-            await updateDoc(postDocRef, {
-              postLikes: arrayRemove(auth.currentUser.uid),
-            });
-          } catch (error) {
-            console.log(error);
-          }
-        } else {
-          try {
-            await updateDoc(postDocRef, {
-              postLikes: arrayUnion(auth.currentUser.uid),
-            });
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      } else {
-        console.log("The document does not exist !");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const dislikePost = async (postId) => {
-    try {
-      const postDocRef = doc(firestore, "posts", postId);
-      const postDocSnapshot = await getDoc(postDocRef);
-      if (postDocSnapshot.exists()) {
-        if (
-          postDocSnapshot.data().postDislikes.includes(auth.currentUser.uid)
-        ) {
-          try {
-            await updateDoc(postDocRef, {
-              postDislikes: arrayRemove(auth.currentUser.uid),
-            });
-          } catch (error) {
-            console.log(error);
-          }
-        } else {
-          try {
-            await updateDoc(postDocRef, {
-              postDislikes: arrayUnion(auth.currentUser.uid),
-            });
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      } else {
-        console.log("The document does not exist !");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const sharePost = async (postId) => {
-    try {
-      const result = await Share.share({
-        message: postId,
-      });
-      // if (result.action === Share.sharedAction) {
-      //   if (result.activityType) {
-      //   } else {
-      //   }
-      // } else if (result.action === Share.dismissedAction) {
-      // }
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   useScrollToTop(reference);
@@ -441,7 +441,7 @@ const Feed = ({ route, navigation }) => {
             ></View>
           );
         }}
-        ListEmptyComponent={EmptyListElement}
+        ListEmptyComponent={emptyListElement}
         renderItem={PostItem}
       />
       <StatusBar style="dark" />

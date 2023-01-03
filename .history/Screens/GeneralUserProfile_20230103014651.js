@@ -32,7 +32,6 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Modal from "react-native-modal";
 import { useFocusEffect } from "@react-navigation/native";
 
 const GeneralUserProfile = ({ route, navigation }) => {
@@ -57,19 +56,6 @@ const GeneralUserProfile = ({ route, navigation }) => {
   const [isFollowing, setIsFollowing] = useState(false);
 
   const [selectedUserPosts, setSelectedUserPosts] = useState([]);
-
-  const [modalVisibility, setModalVisibility] = useState(false);
-
-  const [featuredImage, setFeaturedImage] = useState("");
-
-  const toggleModal = () => {
-    setModalVisibility(!modalVisibility);
-  };
-
-  const toggleModalAndSetImage = (imageUrl) => {
-    toggleModal();
-    setFeaturedImage(imageUrl);
-  };
 
   const emptyListElement = () => {
     return (
@@ -172,25 +158,12 @@ const GeneralUserProfile = ({ route, navigation }) => {
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={(item) => item}
                 renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={{
-                      borderColor: "#F1F2F2",
-                      borderWidth: 1,
-                      marginStart: 55,
-                      marginEnd: 20,
-                      borderRadius: 10,
-                      overflow: "hidden",
+                  <Image
+                    style={styles.postImage}
+                    source={{
+                      uri: item,
                     }}
-                    activeOpacity={1}
-                    onPress={() => toggleModalAndSetImage(item)}
-                  >
-                    <Image
-                      style={styles.postImage}
-                      source={{
-                        uri: item,
-                      }}
-                    />
-                  </TouchableOpacity>
+                  />
                 )}
               />
             ) : (
@@ -285,28 +258,6 @@ const GeneralUserProfile = ({ route, navigation }) => {
                 </TouchableOpacity>
               </View>
             </View>
-            <Modal
-              onBackdropPress={toggleModal}
-              isVisible={modalVisibility}
-              backdropOpacity={1}
-            >
-              <View
-                style={{
-                  flex: 1,
-                  width: "100%",
-                  position: "absolute",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <View>
-                  <Image
-                    style={{ aspectRatio: 1, width: "100%", flex: 1 }}
-                    source={{ uri: featuredImage }}
-                  />
-                </View>
-              </View>
-            </Modal>
           </View>
         )}
       />

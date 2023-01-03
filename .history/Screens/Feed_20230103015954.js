@@ -442,7 +442,7 @@ const Feed = ({ route, navigation }) => {
           );
         }}
         ListEmptyComponent={EmptyListElement}
-        renderItem={PostItem}
+        renderItem={() => PostItem}
       />
       <StatusBar style="dark" />
     </SafeAreaView>

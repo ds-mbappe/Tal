@@ -99,7 +99,6 @@ const Feed = ({ route, navigation }) => {
                   borderRadius: 10,
                   overflow: "hidden",
                 }}
-                activeOpacity={1}
                 onPress={() => toggleModalAndSetImage(item)}
               >
                 <Image
@@ -217,9 +216,7 @@ const Feed = ({ route, navigation }) => {
     );
   };
 
-  const EmptyListElement = ({ item }) => {
-    const [isLiked, setIsLiked] = useState(false);
-
+  const emptyListElement = () => {
     return (
       <View
         style={{
@@ -441,7 +438,7 @@ const Feed = ({ route, navigation }) => {
             ></View>
           );
         }}
-        ListEmptyComponent={EmptyListElement}
+        ListEmptyComponent={emptyListElement}
         renderItem={PostItem}
       />
       <StatusBar style="dark" />
