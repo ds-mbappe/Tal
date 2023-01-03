@@ -117,7 +117,7 @@ const NewPost = ({ navigation }) => {
           setPostText("");
           setSelectedPostImages([]);
           console.log("Post publié avec succès !");
-          navigation.replace("HomeStack", { screen: "Feed" });
+          navigation.replace("Home");
         }, 1250);
       } else {
         alert("Le texte du post ne peut être vide !");

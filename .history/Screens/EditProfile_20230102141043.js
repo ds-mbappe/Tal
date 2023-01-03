@@ -72,7 +72,7 @@ const EditProfile = ({ route, navigation }) => {
     });
     if (!result.canceled) {
       toggleModal();
-      uploadImageAsync(result.assets);
+      uploadImageAsync(result.uri);
     } else if (result.canceled) {
       toggleModal();
     }

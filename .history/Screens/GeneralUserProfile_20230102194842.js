@@ -562,8 +562,8 @@ const GeneralUserProfile = ({ route, navigation }) => {
   const statsListener = onSnapshot(
     doc(firestore, "users", userId),
     (element) => {
-      setFollowersCount(element.data().followers.length);
-      setFollowingCount(element.data().following.length);
+      setCurrentUserFollowers(element.data().followers.length);
+      setCurrentUserFollowing(element.data().following.length);
     }
   );
 

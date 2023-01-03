@@ -29,10 +29,8 @@ import {
   arrayUnion,
   query,
   arrayRemove,
-  onSnapshot,
 } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "@react-navigation/native";
 
 const GeneralUserProfile = ({ route, navigation }) => {
   const { userId } = route.params;
@@ -544,38 +542,15 @@ const GeneralUserProfile = ({ route, navigation }) => {
     }
   };
 
-  // const updateFollowersAndFollowingCount = async () => {
-  //   try {
-  //     const selectedUserDocRef = doc(firestore, "users", userId);
-  //     const selectedUserDocSnapshot = await getDoc(selectedUserDocRef);
-  //     if (selectedUserDocSnapshot.exists()) {
-  //       setFollowersCount(selectedUserDocSnapshot.data().followers.length);
-  //       setFollowingCount(selectedUserDocSnapshot.data().following.length);
-  //     } else {
-  //       console.log("Document does not exist!");
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  const statsListener = onSnapshot(
-    doc(firestore, "users", userId),
-    (element) => {
-      setFollowersCount(element.data().followers.length);
-      setFollowingCount(element.data().following.length);
-    }
+  useFocusEffect(
+    useCallback(() => {
+      getData();
+    }, [])
   );
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     getData();
-  //   }, [])
-  // );
-
-  useEffect(() => {
-    getData();
-  }, []);
+  // useEffect(() => {
+  //   getData();
+  // }, []);
 
   if (Object.keys(userData).length === 0) {
     return (

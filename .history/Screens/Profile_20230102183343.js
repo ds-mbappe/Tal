@@ -34,7 +34,6 @@ import {
 } from "firebase/firestore";
 import Modal from "react-native-modal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useScrollToTop } from "@react-navigation/native";
 
 const Profile = ({ route, navigation }) => {
   const reference = useRef(null);
@@ -192,226 +191,218 @@ const Profile = ({ route, navigation }) => {
     }
   };
 
-  const FirstRoute = () => {
-    const firstReference = useRef(null);
-
-    useScrollToTop(firstReference);
-
-    return (
-      <FlatList
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
-          { useNativeDriver: false }
-        )}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{}}
-        ref={firstReference}
-        data={connectedUserPosts}
-        keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={() => {
-          return (
-            <View
-              style={{
-                width: "100%",
-                borderBottomWidth: 1,
-                borderBottomColor: "#F1F2F2",
-              }}
-            ></View>
-          );
-        }}
-        ListEmptyComponent={emptyListElement}
-        renderItem={({ item }) => {
-          return (
-            <View
-              style={{
-                padding: 15,
-                flexDirection: "column",
-                textAlign: "justify",
-              }}
-            >
-              <View style={styles.postUserInfo}>
-                <TouchableOpacity style={styles.postUserInfoLeft}>
-                  <View style={styles.postPhotoContainer}>
-                    <Image
-                      style={styles.postUserPhoto}
-                      source={{
-                        uri: item.postOwnerProfilePicture,
-                      }}
-                    />
-                  </View>
-                  <View style={styles.postUserNameContainer}>
-                    <Text style={styles.postUserName}>
-                      {item.postOwnerFirstName + " " + item.postOwnerLastName}
-                    </Text>
-                    <Text style={styles.postUserDate}>Il y'a 15 minutes</Text>
-                  </View>
-                </TouchableOpacity>
-                <View style={styles.postMoreContainer}>
-                  <TouchableOpacity>
-                    <Icon.MoreVertical
-                      style={{}}
-                      width={20}
-                      height={20}
-                      stroke="black"
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <Text style={styles.postText}>{item.postActualText}</Text>
-              {item.postImages.length > 0 ? (
-                <FlatList
-                  contentContainerStyle={{}}
-                  horizontal={true}
-                  data={item.postImages}
-                  showsHorizontalScrollIndicator={false}
-                  keyExtractor={(item) => item}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity
-                      style={{
-                        borderColor: "#F1F2F2",
-                        borderWidth: 1,
-                        marginStart: 55,
-                        marginEnd: 20,
-                        borderRadius: 10,
-                        overflow: "hidden",
-                      }}
-                      onPress={() => toggleModalAndSetImage(item)}
-                    >
-                      <Image
-                        style={styles.postImage}
-                        source={{
-                          uri: item,
-                        }}
-                      />
-                    </TouchableOpacity>
-                  )}
-                />
-              ) : (
-                <></>
-              )}
-              <View style={styles.postButtons}>
-                <View style={styles.postButton}>
-                  <TouchableOpacity
-                    onPress={() => likePost(item.id)}
-                    disabled={
-                      item.postDislikes.includes(auth.currentUser.uid)
-                        ? true
-                        : false
-                    }
-                  >
-                    {!item.postLikes.includes(auth.currentUser.uid) ? (
-                      <MaterialCommunityIcons
-                        name="heart-outline"
-                        size={20}
-                        color="black"
-                      />
-                    ) : (
-                      <MaterialCommunityIcons
-                        name="heart"
-                        size={20}
-                        color="#F7941D"
-                      />
-                    )}
-                  </TouchableOpacity>
-                  <Text style={{ fontSize: 18, color: "black" }}>
-                    {" " + item.postLikes.length}
-                  </Text>
-                </View>
-                <View style={styles.postButton}>
-                  <TouchableOpacity
-                    onPress={() => dislikePost(item.id)}
-                    disabled={
-                      item.postLikes.includes(auth.currentUser.uid)
-                        ? true
-                        : false
-                    }
-                  >
-                    {!item.postDislikes.includes(auth.currentUser.uid) ? (
-                      <MaterialCommunityIcons
-                        name="heart-broken-outline"
-                        size={20}
-                        color="black"
-                      />
-                    ) : (
-                      <MaterialCommunityIcons
-                        name="heart-broken"
-                        size={20}
-                        color="#F7941D"
-                      />
-                    )}
-                  </TouchableOpacity>
-                  <Text style={{ fontSize: 18, color: "black" }}>
-                    {" " + item.postDislikes.length}
-                  </Text>
-                </View>
-                <View style={styles.postButton}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      goToCommentariesPage(item.id);
+  const FirstRoute = () => (
+    <FlatList
+      scrollEventThrottle={16}
+      onScroll={Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
+        { useNativeDriver: false }
+      )}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{}}
+      ref={reference}
+      data={connectedUserPosts}
+      keyExtractor={(item) => item.id}
+      ItemSeparatorComponent={() => {
+        return (
+          <View
+            style={{
+              width: "100%",
+              borderBottomWidth: 1,
+              borderBottomColor: "#F1F2F2",
+            }}
+          ></View>
+        );
+      }}
+      ListEmptyComponent={emptyListElement}
+      renderItem={({ item }) => {
+        return (
+          <View
+            style={{
+              padding: 15,
+              flexDirection: "column",
+              textAlign: "justify",
+            }}
+          >
+            <View style={styles.postUserInfo}>
+              <TouchableOpacity style={styles.postUserInfoLeft}>
+                <View style={styles.postPhotoContainer}>
+                  <Image
+                    style={styles.postUserPhoto}
+                    source={{
+                      uri: item.postOwnerProfilePicture,
                     }}
-                  >
-                    <FontAwesome name="comment-o" size={20} color="black" />
-                  </TouchableOpacity>
-                  <Text style={{ fontSize: 18, color: "black" }}>
-                    {" " + item.postCommentsNumber}
+                  />
+                </View>
+                <View style={styles.postUserNameContainer}>
+                  <Text style={styles.postUserName}>
+                    {item.postOwnerFirstName + " " + item.postOwnerLastName}
                   </Text>
+                  <Text style={styles.postUserDate}>Il y'a 15 minutes</Text>
                 </View>
-                <View style={styles.postButton}>
-                  <TouchableOpacity>
-                    <Icon.Repeat
-                      style={{}}
-                      width={20}
-                      height={20}
-                      stroke="black"
-                    />
-                  </TouchableOpacity>
-                  <Text style={{ fontSize: 18, color: "black" }}>
-                    {" " + item.postRetalcs.length}
-                  </Text>
-                </View>
-                <View style={styles.postButton}>
-                  <TouchableOpacity onPress={() => sharePost(item.id)}>
-                    <Icon.Share
-                      style={{}}
-                      width={20}
-                      height={20}
-                      stroke="black"
-                    />
-                  </TouchableOpacity>
-                </View>
+              </TouchableOpacity>
+              <View style={styles.postMoreContainer}>
+                <TouchableOpacity>
+                  <Icon.MoreVertical
+                    style={{}}
+                    width={20}
+                    height={20}
+                    stroke="black"
+                  />
+                </TouchableOpacity>
               </View>
-              <Modal
-                onBackdropPress={toggleModal}
-                isVisible={modalVisibility}
-                backdropOpacity={1}
-              >
-                <View
-                  style={{
-                    flex: 1,
-                    width: "100%",
-                    position: "absolute",
-                    flexDirection: "column",
-                    justifyContent: "center",
+            </View>
+            <Text style={styles.postText}>{item.postActualText}</Text>
+            {item.postImages.length > 0 ? (
+              <FlatList
+                contentContainerStyle={{}}
+                horizontal={true}
+                data={item.postImages}
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item) => item}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={{
+                      borderColor: "#F1F2F2",
+                      borderWidth: 1,
+                      marginStart: 55,
+                      marginEnd: 20,
+                      borderRadius: 10,
+                      overflow: "hidden",
+                    }}
+                    onPress={() => toggleModalAndSetImage(item)}
+                  >
+                    <Image
+                      style={styles.postImage}
+                      source={{
+                        uri: item,
+                      }}
+                    />
+                  </TouchableOpacity>
+                )}
+              />
+            ) : (
+              <></>
+            )}
+            <View style={styles.postButtons}>
+              <View style={styles.postButton}>
+                <TouchableOpacity
+                  onPress={() => likePost(item.id)}
+                  disabled={
+                    item.postDislikes.includes(auth.currentUser.uid)
+                      ? true
+                      : false
+                  }
+                >
+                  {!item.postLikes.includes(auth.currentUser.uid) ? (
+                    <MaterialCommunityIcons
+                      name="heart-outline"
+                      size={20}
+                      color="black"
+                    />
+                  ) : (
+                    <MaterialCommunityIcons
+                      name="heart"
+                      size={20}
+                      color="#F7941D"
+                    />
+                  )}
+                </TouchableOpacity>
+                <Text style={{ fontSize: 18, color: "black" }}>
+                  {" " + item.postLikes.length}
+                </Text>
+              </View>
+              <View style={styles.postButton}>
+                <TouchableOpacity
+                  onPress={() => dislikePost(item.id)}
+                  disabled={
+                    item.postLikes.includes(auth.currentUser.uid) ? true : false
+                  }
+                >
+                  {!item.postDislikes.includes(auth.currentUser.uid) ? (
+                    <MaterialCommunityIcons
+                      name="heart-broken-outline"
+                      size={20}
+                      color="black"
+                    />
+                  ) : (
+                    <MaterialCommunityIcons
+                      name="heart-broken"
+                      size={20}
+                      color="#F7941D"
+                    />
+                  )}
+                </TouchableOpacity>
+                <Text style={{ fontSize: 18, color: "black" }}>
+                  {" " + item.postDislikes.length}
+                </Text>
+              </View>
+              <View style={styles.postButton}>
+                <TouchableOpacity
+                  onPress={() => {
+                    goToCommentariesPage(item.id);
                   }}
                 >
-                  <View>
-                    <Image
-                      style={{ aspectRatio: 1, width: "100%", flex: 1 }}
-                      source={{ uri: featuredImage }}
-                    />
-                  </View>
-                </View>
-              </Modal>
+                  <FontAwesome name="comment-o" size={20} color="black" />
+                </TouchableOpacity>
+                <Text style={{ fontSize: 18, color: "black" }}>
+                  {" " + item.postCommentsNumber}
+                </Text>
+              </View>
+              <View style={styles.postButton}>
+                <TouchableOpacity>
+                  <Icon.Repeat
+                    style={{}}
+                    width={20}
+                    height={20}
+                    stroke="black"
+                  />
+                </TouchableOpacity>
+                <Text style={{ fontSize: 18, color: "black" }}>
+                  {" " + item.postRetalcs.length}
+                </Text>
+              </View>
+              <View style={styles.postButton}>
+                <TouchableOpacity onPress={() => sharePost(item.id)}>
+                  <Icon.Share
+                    style={{}}
+                    width={20}
+                    height={20}
+                    stroke="black"
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
-          );
-        }}
-      />
-    );
-  };
+            <Modal
+              onBackdropPress={toggleModal}
+              isVisible={modalVisibility}
+              backdropOpacity={1}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  width: "100%",
+                  position: "absolute",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+              >
+                <View>
+                  <Image
+                    style={{ aspectRatio: 1, width: "100%", flex: 1 }}
+                    source={{ uri: featuredImage }}
+                  />
+                </View>
+              </View>
+            </Modal>
+          </View>
+        );
+      }}
+    />
+  );
 
   const SecondRoute = () => (
     <FlatList
