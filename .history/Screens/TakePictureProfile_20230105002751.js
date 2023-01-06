@@ -43,6 +43,12 @@ const TakePictureProfile = ({ navigation }) => {
 
   const [isUploading, setIsUploading] = useState(false);
 
+  const isFocused = useIsFocused();
+
+  useState(() => {
+    console.log(permission.status);
+  }, []);
+
   if (!permission) {
     // Camera permissions are still loading
     return (

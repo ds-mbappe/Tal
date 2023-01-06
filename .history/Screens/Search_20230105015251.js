@@ -34,7 +34,7 @@ const Search = () => {
         where("firstName", ">=", text),
         where(
           "firstName",
-          "<",
+          "<=",
           search.replace(/.$/, (c) => String.fromCharCode(c.charCodeAt(0) + 1))
         ),
         orderBy("firstName", "asc")

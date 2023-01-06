@@ -69,12 +69,11 @@ const EditProfile = ({ route, navigation }) => {
       allowsEditing: true,
       aspect: [4, 4],
       quality: 0.1,
-      allowsMultipleSelection: false,
     });
     if (!result.canceled) {
       toggleModal();
-      //console.log(result.assets[0].uri);
-      uploadImageAsync(result.assets[0].uri);
+      console.log(result.assets);
+      uploadImageAsync(result.assets);
     } else if (result.canceled) {
       toggleModal();
     }

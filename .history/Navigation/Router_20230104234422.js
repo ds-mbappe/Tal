@@ -31,17 +31,17 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeStack = ({ navigation, route }) => {
-  useLayoutEffect(() => {
-    const routeName = getFocusedRouteNameFromRoute(route);
-    const tabHiddenRoutes = ["Settings", "CommentPage"];
-    if (tabHiddenRoutes.includes(routeName)) {
-      navigation.setOptions({
-        tabBarStyle: { position: "absolute", display: "none" },
-      });
-    } else {
-      navigation.setOptions({ tabBarStyle: { display: "flex" } });
-    }
-  });
+  // useLayoutEffect(() => {
+  //   const routeName = getFocusedRouteNameFromRoute(route);
+  //   const tabHiddenRoutes = ["Settings", "CommentPage"];
+  //   if (tabHiddenRoutes.includes(routeName)) {
+  //     navigation.setOptions({
+  //       tabBarStyle: { position: "absolute", display: "none" },
+  //     });
+  //   } else {
+  //     navigation.setOptions({ tabBarStyle: { display: "flex" } });
+  //   }
+  // });
 
   return (
     <Stack.Navigator>
@@ -225,7 +225,7 @@ const MessagesStack = ({ navigation }) => {
 const ProfileStack = ({ navigation, route }) => {
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    const tabHiddenRoutes = ["Settings", "CommentPage", "TakePictureProfile"];
+    const tabHiddenRoutes = ["Settings", "CommentPage"];
     if (tabHiddenRoutes.includes(routeName)) {
       navigation.setOptions({
         tabBarStyle: { position: "absolute", display: "none" },

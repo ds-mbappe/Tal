@@ -31,9 +31,9 @@ const Search = () => {
       const usersDataDocRef = collection(firestore, "users");
       const usersDataQuery = query(
         usersDataDocRef,
-        where("firstName", ">=", text),
+        where("firstName".toLowerCase(), ">=", text),
         where(
-          "firstName",
+          "firstName".toLowerCase(),
           "<",
           search.replace(/.$/, (c) => String.fromCharCode(c.charCodeAt(0) + 1))
         ),

@@ -43,6 +43,8 @@ const TakePictureProfile = ({ navigation }) => {
 
   const [isUploading, setIsUploading] = useState(false);
 
+  const isFocused = useIsFocused();
+
   if (!permission) {
     // Camera permissions are still loading
     return (
@@ -300,13 +302,15 @@ const TakePictureProfile = ({ navigation }) => {
               <View style={{ marginTop: "32%" }}></View>
             )}
           </View>
-          <Camera
-            style={styles.camera}
-            type={type}
-            autoFocus={focus}
-            flashMode={flash}
-            ref={cameraRef}
-          ></Camera>
+          {isFocused && (
+            <Camera
+              style={styles.camera}
+              type={type}
+              autoFocus={focus}
+              flashMode={flash}
+              ref={cameraRef}
+            />
+          )}
           <View style={styles.buttonContainerBottom}>
             <TouchableOpacity onPress={cancelTakePicture}>
               <Text style={{ color: "#F7941D", fontSize: 18 }}>Annuler</Text>

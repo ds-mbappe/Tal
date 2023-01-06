@@ -43,6 +43,8 @@ const TakePictureProfile = ({ navigation }) => {
 
   const [isUploading, setIsUploading] = useState(false);
 
+  const isFocused = useIsFocused();
+
   if (!permission) {
     // Camera permissions are still loading
     return (
@@ -99,6 +101,7 @@ const TakePictureProfile = ({ navigation }) => {
       storage,
       "profilePictures/" + auth.currentUser.uid + "/" + auth.currentUser.uid
     );
+    setIsUploading(true);
     // Upload Image to the right directory
     try {
       const blob = await new Promise((resolve, reject) => {
@@ -120,7 +123,6 @@ const TakePictureProfile = ({ navigation }) => {
         await getDownloadURL(profilePictureRef)
           .then(async (url) => {
             profile = url;
-            setIsUploading(true);
             // We're done with the blob, close and release it
             blob.close();
           })

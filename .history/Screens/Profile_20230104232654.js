@@ -492,7 +492,7 @@ const Profile = ({ route, navigation }) => {
     });
   };
 
-  const userStatsListener = onSnapshot(
+  const statsListener = onSnapshot(
     doc(firestore, "users", auth.currentUser.uid),
     (element) => {
       setCurrentUserFollowers(element.data().followers.length);

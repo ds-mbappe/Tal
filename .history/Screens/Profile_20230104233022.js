@@ -500,6 +500,13 @@ const Profile = ({ route, navigation }) => {
     }
   );
 
+  const userPostStatsListener = onSnapshot(
+    collection(firestore, "posts"),
+    (element) => {
+      console.log("Hello");
+    }
+  );
+
   const getData = async () => {
     // Get all posts of the connected user from Firestore and store them
     try {

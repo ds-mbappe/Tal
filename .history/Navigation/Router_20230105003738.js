@@ -225,7 +225,7 @@ const MessagesStack = ({ navigation }) => {
 const ProfileStack = ({ navigation, route }) => {
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    const tabHiddenRoutes = ["Settings", "CommentPage", "TakePictureProfile"];
+    const tabHiddenRoutes = ["Settings", "CommentPage"];
     if (tabHiddenRoutes.includes(routeName)) {
       navigation.setOptions({
         tabBarStyle: { position: "absolute", display: "none" },
@@ -348,6 +348,7 @@ const Router = () => {
                 tabBarLabelStyle: {
                   fontWeight: "bold",
                 },
+                unmountOnBlur: true,
                 tabBarIcon: (tabInfo) => {
                   return (
                     <Icon.Home
@@ -364,6 +365,7 @@ const Router = () => {
               component={SearchStack}
               options={{
                 title: "SearchStack",
+                unmountOnBlur: true,
                 tabBarIcon: (tabInfo) => {
                   return (
                     <Icon.Search
@@ -381,6 +383,7 @@ const Router = () => {
               options={{
                 tabBarStyle: { display: "none" },
                 title: "GateawayStack",
+                unmountOnBlur: true,
                 tabBarIcon: (tabInfo) => {
                   return (
                     <View
@@ -410,6 +413,7 @@ const Router = () => {
               component={MessagesStack}
               options={{
                 title: "MessagesStack",
+                unmountOnBlur: true,
                 tabBarIcon: (tabInfo) => {
                   return (
                     <Icon.MessageCircle
@@ -426,6 +430,7 @@ const Router = () => {
               component={ProfileStack}
               options={{
                 title: "ProfileStack",
+                unmountOnBlur: true,
                 tabBarIcon: (tabInfo) => {
                   return (
                     <Icon.User

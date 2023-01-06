@@ -9,46 +9,9 @@ import {
 } from "react-native";
 import { React, useState } from "react";
 import * as Icon from "react-native-feather";
-import { firestore } from "../firebase";
-import {
-  collection,
-  getDoc,
-  getDocs,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
 
 const Search = () => {
   const [search, setSearch] = useState("");
-
-  const [usersList, setUsersList] = useState([]);
-
-  const getSearchData = async (text) => {
-    // Get all users from firestore and store them
-    try {
-      let users = [];
-      const usersDataDocRef = collection(firestore, "users");
-      const usersDataQuery = query(
-        usersDataDocRef,
-        where("firstName", ">=", text),
-        where(
-          "firstName",
-          "<",
-          search.replace(/.$/, (c) => String.fromCharCode(c.charCodeAt(0) + 1))
-        ),
-        orderBy("firstName", "asc")
-      );
-      const querySnapshot = await getDocs(usersDataQuery);
-      querySnapshot.forEach((user) => {
-        users.push(user.data());
-      });
-      console.log(users);
-      setUsersList(users);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -60,9 +23,7 @@ const Search = () => {
           placeholderTextColor="#A7A7A7"
           autoCapitalize="none"
           value={search}
-          onChangeText={(text) => {
-            setSearch(text), getSearchData(text);
-          }}
+          onChangeText={(text) => setSearch(text)}
         />
         <TouchableOpacity
           style={{

@@ -228,7 +228,11 @@ const ProfileStack = ({ navigation, route }) => {
     const tabHiddenRoutes = ["Settings", "CommentPage", "TakePictureProfile"];
     if (tabHiddenRoutes.includes(routeName)) {
       navigation.setOptions({
-        tabBarStyle: { position: "absolute", display: "none" },
+        tabBarStyle: {
+          position: "absolute",
+          display: "flex",
+          backgroundColor: "black",
+        },
       });
     } else {
       navigation.setOptions({ tabBarStyle: { display: "flex" } });

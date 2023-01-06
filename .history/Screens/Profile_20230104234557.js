@@ -468,7 +468,7 @@ const Profile = ({ route, navigation }) => {
   });
 
   const navigateToEditProfile = () => {
-    navigation.navigate("EditProfile");
+    navigation.navigate("TakePictureProfile");
   };
 
   const navigateToSettings = () => {

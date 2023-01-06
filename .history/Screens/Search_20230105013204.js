@@ -24,27 +24,21 @@ const Search = () => {
 
   const [usersList, setUsersList] = useState([]);
 
-  const getSearchData = async (text) => {
+  const getSearchData = async () => {
     // Get all users from firestore and store them
     try {
       let users = [];
       const usersDataDocRef = collection(firestore, "users");
       const usersDataQuery = query(
         usersDataDocRef,
-        where("firstName", ">=", text),
-        where(
-          "firstName",
-          "<",
-          search.replace(/.$/, (c) => String.fromCharCode(c.charCodeAt(0) + 1))
-        ),
         orderBy("firstName", "asc")
       );
       const querySnapshot = await getDocs(usersDataQuery);
       querySnapshot.forEach((user) => {
-        users.push(user.data());
+        console.log(user.data());
       });
-      console.log(users);
       setUsersList(users);
+      console.log(users);
     } catch (error) {
       console.log(error);
     }
@@ -61,7 +55,7 @@ const Search = () => {
           autoCapitalize="none"
           value={search}
           onChangeText={(text) => {
-            setSearch(text), getSearchData(text);
+            setSearch(text), getSearchData();
           }}
         />
         <TouchableOpacity

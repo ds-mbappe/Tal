@@ -233,6 +233,8 @@ const Profile = ({ route, navigation }) => {
         }}
         ListEmptyComponent={emptyListElement}
         renderItem={({ item }) => {
+          const [lol, setLol] = useState(0);
+
           return (
             <View
               style={{

@@ -22,7 +22,6 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { useIsFocused } from "@react-navigation/native";
 
 const TakePictureProfile = ({ navigation }) => {
   let profile = "";
