@@ -108,8 +108,9 @@ const CommentPage = ({ route, navigation }) => {
           <Text
             style={{
               fontSize: 16,
-              margin: 5,
               textAlign: "center",
+              borderColor: "red",
+              borderWidth: 1,
             }}
           >
             {item.commentLikes.length}

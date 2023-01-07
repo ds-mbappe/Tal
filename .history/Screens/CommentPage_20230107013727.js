@@ -103,10 +103,13 @@ const CommentPage = ({ route, navigation }) => {
             flexDirection: "row",
             justifyContent: "center",
             alignItems: "center",
+            borderColor: "red",
+            borderWidth: 1,
           }}
         >
           <Text
             style={{
+              width: 25,
               fontSize: 16,
               margin: 5,
               textAlign: "center",

@@ -102,14 +102,16 @@ const CommentPage = ({ route, navigation }) => {
             display: "flex",
             flexDirection: "row",
             justifyContent: "center",
-            alignItems: "center",
           }}
         >
           <Text
             style={{
               fontSize: 16,
+              marginStart: 10,
               margin: 5,
               textAlign: "center",
+              borderColor: "red",
+              borderWidth: 1,
             }}
           >
             {item.commentLikes.length}
