@@ -1,80 +1,47 @@
 import {
-  StyleSheet,
-  Text,
   SafeAreaView,
-  ScrollView,
-  View,
-  TextInput,
+  Text,
+  Image,
   TouchableOpacity,
+  StyleSheet,
+  View,
   FlatList,
   RefreshControl,
-  Image,
+  ActivityIndicator,
   Share,
 } from "react-native";
-import { React, useCallback, useEffect, useRef, useState } from "react";
-import * as Icon from "react-native-feather";
 import { auth, firestore } from "../firebase";
 import {
-  arrayRemove,
-  arrayUnion,
+  where,
   collection,
   doc,
+  updateDoc,
   getDoc,
   getDocs,
   orderBy,
+  arrayUnion,
   query,
-  updateDoc,
-  where,
+  arrayRemove,
 } from "firebase/firestore";
-import Modal from "react-native-modal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StatusBar } from "expo-status-bar";
+import * as Icon from "react-native-feather";
 import { FontAwesome } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { React, useRef, useState, useCallback } from "react";
+import { useFocusEffect, useScrollToTop } from "@react-navigation/native";
+import Modal from "react-native-modal";
 
-const Search = ({ navigation }) => {
-  const [search, setSearch] = useState("");
-
-  const [usersList, setUsersList] = useState([]);
-
-  const [posts, setPosts] = useState([]);
+const Feed = ({ route, navigation }) => {
+  const reference = useRef(null);
 
   const [refreshing, setRefreshing] = useState(false);
+
+  const [posts, setPosts] = useState([]);
 
   const [modalVisibility, setModalVisibility] = useState(false);
 
   const [featuredImage, setFeaturedImage] = useState("");
-
-  const reference = useRef(null);
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
-  });
-
-  const searchRenderItem = ({ item }) => {
-    return (
-      <TouchableOpacity
-        style={styles.renderItem}
-        activeOpacity={1}
-        onPress={() => navigateToClickedUserProfile(item.id)}
-      >
-        <View style={styles.renderItemLeft}>
-          <Image
-            style={styles.profilePicture}
-            source={{ uri: item.profilePicture }}
-          />
-          <View style={styles.details}>
-            <Text style={styles.name} numberOfLines={1}>
-              {item.firstName + " " + item.lastName}
-            </Text>
-            <Text style={styles.talcsign}>{item.talcsign}</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  };
 
   const PostItem = ({ item }) => {
     return (
@@ -88,7 +55,7 @@ const Search = ({ navigation }) => {
         <View style={styles.postUserInfo}>
           <TouchableOpacity
             style={styles.postUserInfoLeft}
-            onPress={() => navigateToClickedUserProfile(item.postOwnerId)}
+            onPress={() => goToGeneralUserProfile(item.postOwnerId)}
           >
             <View style={styles.postPhotoContainer}>
               <Image
@@ -252,6 +219,41 @@ const Search = ({ navigation }) => {
     );
   };
 
+  const EmptyListElement = ({ item }) => {
+    const [isLiked, setIsLiked] = useState(false);
+
+    return (
+      <View
+        style={{
+          flex: 1,
+          marginTop: "45%",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "white",
+        }}
+      >
+        <Text>Aucune publication pour le moment !</Text>
+      </View>
+    );
+  };
+
+  const toggleModal = () => {
+    setModalVisibility(!modalVisibility);
+  };
+
+  const toggleModalAndSetImage = (imageUrl) => {
+    toggleModal();
+    setFeaturedImage(imageUrl);
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    getPostData();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  });
+
   const getElapsedTime = (time) => {
     const postDate = new Date(time);
 
@@ -282,29 +284,43 @@ const Search = ({ navigation }) => {
       }
       return "Il y'a " + Math.round(secondsElapsed / 86400) + " jours";
     } else if (secondsElapsed >= 604800 && secondsElapsed < 2419200) {
-      if (secondsElapsed == 604800) {
+      if (secondsElapsed >= 604800 && secondsElapsed < 1209600) {
         return "Il y'a " + Math.round(secondsElapsed / 604800) + " semaine";
       }
       return "Il y'a " + Math.round(secondsElapsed / 604800) + " semaines";
     }
   };
 
-  const navigateToClickedUserProfile = (id) => {
-    // if (id == auth.currentUser.uid) {
+  const goToCommentariesPage = async (postId) => {
+    // Get all comments from Firestore and store them
+    try {
+      let comments = [];
+      const commentDataDocRef = collection(firestore, "comments");
+      const commentDataQuery = query(
+        commentDataDocRef,
+        where("commentRelatedPostId", "==", postId),
+        orderBy("commentPublishedTime", "desc")
+      );
+      await getDocs(commentDataQuery).then(async (querySnapshot) => {
+        querySnapshot.forEach((post) => {
+          comments.push(post.data());
+        });
+        await AsyncStorage.setItem("@postId", postId).then(() => {
+          navigation.navigate("CommentPage", { postComments: comments });
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const goToGeneralUserProfile = (userId) => {
+    // if (userId == auth.currentUser.uid) {
     //   navigation.navigate("ProfileStack", { screen: "Profile" });
     // } else {
-    //   navigation.push("GeneralUserProfile", { userId: id });
+    //   navigation.push("GeneralUserProfile", { userId: userId });
     // }
-    navigation.push("GeneralUserProfile", { userId: id });
-  };
-
-  const toggleModal = () => {
-    setModalVisibility(!modalVisibility);
-  };
-
-  const toggleModalAndSetImage = (imageUrl) => {
-    toggleModal();
-    setFeaturedImage(imageUrl);
+    navigation.push("GeneralUserProfile", { userId: userId });
   };
 
   const likePost = async (postId) => {
@@ -373,29 +389,6 @@ const Search = ({ navigation }) => {
     }
   };
 
-  const goToCommentariesPage = async (postId) => {
-    // Get all comments from Firestore and store them
-    try {
-      let comments = [];
-      const commentDataDocRef = collection(firestore, "comments");
-      const commentDataQuery = query(
-        commentDataDocRef,
-        where("commentRelatedPostId", "==", postId),
-        orderBy("commentPublishedTime", "desc")
-      );
-      await getDocs(commentDataQuery).then(async (querySnapshot) => {
-        querySnapshot.forEach((post) => {
-          comments.push(post.data());
-        });
-        await AsyncStorage.setItem("@postId", postId).then(() => {
-          navigation.navigate("CommentPage", { postComments: comments });
-        });
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const sharePost = async (postId) => {
     try {
       const result = await Share.share({
@@ -412,33 +405,6 @@ const Search = ({ navigation }) => {
     }
   };
 
-  const getSearchData = async (text) => {
-    // Get all users from firestore and store them
-    let strlength = text.length;
-    let strFrontCode = text.slice(0, strlength - 1);
-    let strEndCode = text.slice(strlength - 1, strlength);
-    let endcode =
-      strFrontCode + String.fromCharCode(strEndCode.charCodeAt(0) + 1);
-    try {
-      let users = [];
-      const usersDataDocRef = collection(firestore, "users");
-      const usersDataQuery = query(
-        usersDataDocRef,
-        where("firstName", ">=", text),
-        where("firstName", "<", endcode),
-        orderBy("firstName", "asc")
-      );
-      const querySnapshot = await getDocs(usersDataQuery);
-      querySnapshot.forEach((user) => {
-        users.push(user.data());
-      });
-      //console.log(users);
-      setUsersList(users);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const getPostData = async () => {
     try {
       let posts = [];
@@ -449,7 +415,9 @@ const Search = ({ navigation }) => {
       );
       const querySnapshot = await getDocs(postDataQuery);
       querySnapshot.forEach((post) => {
-        posts.push(post.data());
+        if (post.data().id !== auth.currentUser.uid) {
+          posts.push(post.data());
+        }
       });
       setPosts(posts);
     } catch (error) {
@@ -457,93 +425,77 @@ const Search = ({ navigation }) => {
     }
   };
 
-  useEffect(() => {
-    getPostData();
-  }, []);
+  useScrollToTop(reference);
+
+  useFocusEffect(
+    useCallback(() => {
+      getPostData();
+    }, [])
+  );
+
+  // useEffect(() => {
+  //   getPostData();
+  // }, []);
+
+  if (posts.length == 0) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "white",
+        }}
+      >
+        <ActivityIndicator />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.searchContainer}>
-        <Icon.Search width={15} height={15} stroke="#A7A7A7" />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Rechercher"
-          placeholderTextColor="#A7A7A7"
-          autoCapitalize="none"
-          value={search}
-          onChangeText={(text) => {
-            setSearch(text), getSearchData(text);
-          }}
-        />
-        <TouchableOpacity
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            width: 30,
-            height: 30,
-            display: search == "" ? "none" : "flex",
-          }}
-          activeOpacity={1}
-          onPress={() => setSearch("")}
-        >
-          <Icon.X width={15} height={15} stroke="#A7A7A7" />
-        </TouchableOpacity>
+      <View
+        style={{
+          width: "100%",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 46,
+          borderBottomColor: "#F1F2F2",
+          borderBottomWidth: 1,
+        }}
+      >
+        <Text style={{ fontWeight: "bold", fontSize: 16 }}>Feed</Text>
       </View>
-      {search !== "" ? (
-        <View style={{ flex: 1, backgroundColor: "white" }}>
-          <FlatList
-            contentContainerStyle={{ backgroundColor: "white" }}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-            ref={reference}
-            data={usersList}
-            keyExtractor={(item) => item.id}
-            ItemSeparatorComponent={() => {
-              return (
-                <View
-                  style={{
-                    width: "100%",
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#F1F2F2",
-                  }}
-                ></View>
-              );
-            }}
-            renderItem={searchRenderItem}
-          />
-        </View>
-      ) : (
-        <View style={{ flex: 1, backgroundColor: "white" }}>
-          <FlatList
-            contentContainerStyle={{}}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-            ref={reference}
-            data={posts}
-            keyExtractor={(item) => item.id}
-            ItemSeparatorComponent={() => {
-              return (
-                <View
-                  style={{
-                    width: "100%",
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#F1F2F2",
-                  }}
-                ></View>
-              );
-            }}
-            renderItem={PostItem}
-          />
-        </View>
-      )}
+      <FlatList
+        contentContainerStyle={{}}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        ref={reference}
+        data={posts}
+        keyExtractor={(item) => item.id}
+        ItemSeparatorComponent={() => {
+          return (
+            <View
+              style={{
+                width: "100%",
+                borderBottomWidth: 1,
+                borderBottomColor: "#F1F2F2",
+              }}
+            ></View>
+          );
+        }}
+        ListEmptyComponent={EmptyListElement}
+        renderItem={PostItem}
+      />
+      <StatusBar style="dark" />
     </SafeAreaView>
   );
 };
 
-export default Search;
+export default Feed;
 
 const styles = StyleSheet.create({
   container: {
@@ -610,53 +562,14 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   searchContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: "#F1F2F2",
-    marginTop: 10,
-    marginHorizontal: 10,
-    padding: 10,
+    borderColor: "#0C0C0C",
+    borderWidth: 1,
+    flexDirection: "column",
+    borderRadius: 50,
   },
   searchInput: {
-    flex: 1,
-    marginStart: 10,
-    fontSize: 16,
-    height: 40,
-  },
-  renderItem: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    height: 70,
-    padding: 10,
-  },
-  renderItemLeft: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  profilePicture: {
-    width: 50,
-    height: 50,
-    borderRadius: 30,
-  },
-  details: {
-    marginStart: 10,
-  },
-  name: {
-    maxWidth: 150,
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "black",
-  },
-  talcsign: {
-    fontSize: 14,
-    color: "#A7A7A7",
+    paddingTop: 10,
+    paddingStart: 15,
+    paddingBottom: 10,
   },
 });

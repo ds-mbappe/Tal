@@ -29,7 +29,6 @@ import {
 import Modal from "react-native-modal";
 import { FontAwesome } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Search = ({ navigation }) => {
   const [search, setSearch] = useState("");

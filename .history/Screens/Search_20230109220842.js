@@ -9,27 +9,18 @@ import {
   FlatList,
   RefreshControl,
   Image,
-  Share,
 } from "react-native";
 import { React, useCallback, useEffect, useRef, useState } from "react";
 import * as Icon from "react-native-feather";
 import { auth, firestore } from "../firebase";
 import {
-  arrayRemove,
-  arrayUnion,
   collection,
-  doc,
   getDoc,
   getDocs,
   orderBy,
   query,
-  updateDoc,
   where,
 } from "firebase/firestore";
-import Modal from "react-native-modal";
-import { FontAwesome } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Search = ({ navigation }) => {
   const [search, setSearch] = useState("");
@@ -39,8 +30,6 @@ const Search = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
 
   const [refreshing, setRefreshing] = useState(false);
-
-  const [modalVisibility, setModalVisibility] = useState(false);
 
   const [featuredImage, setFeaturedImage] = useState("");
 
@@ -88,7 +77,7 @@ const Search = ({ navigation }) => {
         <View style={styles.postUserInfo}>
           <TouchableOpacity
             style={styles.postUserInfoLeft}
-            onPress={() => navigateToClickedUserProfile(item.postOwnerId)}
+            onPress={() => goToGeneralUserProfile(item.postOwnerId)}
           >
             <View style={styles.postPhotoContainer}>
               <Image
@@ -252,43 +241,6 @@ const Search = ({ navigation }) => {
     );
   };
 
-  const getElapsedTime = (time) => {
-    const postDate = new Date(time);
-
-    let today = new Date();
-
-    let diff = today.getTime() - postDate.getTime();
-
-    let secondsElapsed = Math.floor(diff) / 1000;
-
-    if (secondsElapsed > 0 && secondsElapsed < 60) {
-      if ((secondsElapsed = 1)) {
-        return "Il y'a " + Math.round(secondsElapsed) + " seconde";
-      }
-      return "Il y'a " + Math.round(secondsElapsed) + " secondes";
-    } else if (secondsElapsed >= 60 && secondsElapsed < 3600) {
-      if (secondsElapsed >= 60 && secondsElapsed < 120) {
-        return "Il y'a " + Math.round(secondsElapsed / 60) + " minute";
-      }
-      return "Il y'a " + Math.round(secondsElapsed / 60) + " minutes";
-    } else if (secondsElapsed >= 3600 && secondsElapsed < 86400) {
-      if (secondsElapsed >= 3600 && secondsElapsed < 7200) {
-        return "Il y'a " + Math.round(secondsElapsed / 3600) + " heure";
-      }
-      return "Il y'a " + Math.round(secondsElapsed / 3600) + " heures";
-    } else if (secondsElapsed >= 86400 && secondsElapsed < 604800) {
-      if (secondsElapsed >= 86400 && secondsElapsed < 172800) {
-        return "Il y'a " + Math.round(secondsElapsed / 86400) + " jour";
-      }
-      return "Il y'a " + Math.round(secondsElapsed / 86400) + " jours";
-    } else if (secondsElapsed >= 604800 && secondsElapsed < 2419200) {
-      if (secondsElapsed == 604800) {
-        return "Il y'a " + Math.round(secondsElapsed / 604800) + " semaine";
-      }
-      return "Il y'a " + Math.round(secondsElapsed / 604800) + " semaines";
-    }
-  };
-
   const navigateToClickedUserProfile = (id) => {
     // if (id == auth.currentUser.uid) {
     //   navigation.navigate("ProfileStack", { screen: "Profile" });
@@ -296,120 +248,6 @@ const Search = ({ navigation }) => {
     //   navigation.push("GeneralUserProfile", { userId: id });
     // }
     navigation.push("GeneralUserProfile", { userId: id });
-  };
-
-  const toggleModal = () => {
-    setModalVisibility(!modalVisibility);
-  };
-
-  const toggleModalAndSetImage = (imageUrl) => {
-    toggleModal();
-    setFeaturedImage(imageUrl);
-  };
-
-  const likePost = async (postId) => {
-    try {
-      const postDocRef = doc(firestore, "posts", postId);
-      const postDocSnapshot = await getDoc(postDocRef);
-      if (postDocSnapshot.exists()) {
-        if (postDocSnapshot.data().postLikes.includes(auth.currentUser.uid)) {
-          try {
-            await updateDoc(postDocRef, {
-              postLikes: arrayRemove(auth.currentUser.uid),
-            });
-            getPostData();
-          } catch (error) {
-            console.log(error);
-          }
-        } else {
-          try {
-            await updateDoc(postDocRef, {
-              postLikes: arrayUnion(auth.currentUser.uid),
-            });
-            getPostData();
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      } else {
-        console.log("The document does not exist !");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const dislikePost = async (postId) => {
-    try {
-      const postDocRef = doc(firestore, "posts", postId);
-      const postDocSnapshot = await getDoc(postDocRef);
-      if (postDocSnapshot.exists()) {
-        if (
-          postDocSnapshot.data().postDislikes.includes(auth.currentUser.uid)
-        ) {
-          try {
-            await updateDoc(postDocRef, {
-              postDislikes: arrayRemove(auth.currentUser.uid),
-            });
-            getPostData();
-          } catch (error) {
-            console.log(error);
-          }
-        } else {
-          try {
-            await updateDoc(postDocRef, {
-              postDislikes: arrayUnion(auth.currentUser.uid),
-            });
-            getPostData();
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      } else {
-        console.log("The document does not exist !");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const goToCommentariesPage = async (postId) => {
-    // Get all comments from Firestore and store them
-    try {
-      let comments = [];
-      const commentDataDocRef = collection(firestore, "comments");
-      const commentDataQuery = query(
-        commentDataDocRef,
-        where("commentRelatedPostId", "==", postId),
-        orderBy("commentPublishedTime", "desc")
-      );
-      await getDocs(commentDataQuery).then(async (querySnapshot) => {
-        querySnapshot.forEach((post) => {
-          comments.push(post.data());
-        });
-        await AsyncStorage.setItem("@postId", postId).then(() => {
-          navigation.navigate("CommentPage", { postComments: comments });
-        });
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const sharePost = async (postId) => {
-    try {
-      const result = await Share.share({
-        message: postId,
-      });
-      // if (result.action === Share.sharedAction) {
-      //   if (result.activityType) {
-      //   } else {
-      //   }
-      // } else if (result.action === Share.dismissedAction) {
-      // }
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const getSearchData = async (text) => {
@@ -514,30 +352,7 @@ const Search = ({ navigation }) => {
           />
         </View>
       ) : (
-        <View style={{ flex: 1, backgroundColor: "white" }}>
-          <FlatList
-            contentContainerStyle={{}}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-            ref={reference}
-            data={posts}
-            keyExtractor={(item) => item.id}
-            ItemSeparatorComponent={() => {
-              return (
-                <View
-                  style={{
-                    width: "100%",
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#F1F2F2",
-                  }}
-                ></View>
-              );
-            }}
-            renderItem={PostItem}
-          />
-        </View>
+        <></>
       )}
     </SafeAreaView>
   );
@@ -549,65 +364,6 @@ const styles = StyleSheet.create({
   container: {
     height: "100%",
     backgroundColor: "white",
-  },
-  postUserInfo: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  postUserInfoLeft: {
-    flexDirection: "row",
-  },
-  postPhotoContainer: {
-    width: 45,
-    height: 45,
-    marginRight: 10,
-  },
-  postUserPhoto: {
-    width: 45,
-    height: 45,
-    borderRadius: 45 / 2,
-  },
-  postUserNameContainer: {
-    flexDirection: "column",
-  },
-  postUserName: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#0C0C0C",
-  },
-  postUserDate: {
-    fontSize: 14,
-    color: "gray",
-  },
-  postMoreContainer: {},
-  postText: {
-    fontSize: 18,
-    color: "#0C0C0C",
-    marginTop: 10,
-    marginStart: 55,
-    marginBottom: 10,
-  },
-  postImageContainer: {
-    flexGrow: 1,
-  },
-  postImage: {
-    aspectRatio: 1,
-    width: "150%",
-    flex: 1,
-  },
-  postButtons: {
-    justifyContent: "space-around",
-    alignItems: "center",
-    flexDirection: "row",
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  postButton: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "flex-end",
   },
   searchContainer: {
     display: "flex",

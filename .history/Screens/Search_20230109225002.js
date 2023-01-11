@@ -9,7 +9,6 @@ import {
   FlatList,
   RefreshControl,
   Image,
-  Share,
 } from "react-native";
 import { React, useCallback, useEffect, useRef, useState } from "react";
 import * as Icon from "react-native-feather";
@@ -29,7 +28,6 @@ import {
 import Modal from "react-native-modal";
 import { FontAwesome } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Search = ({ navigation }) => {
   const [search, setSearch] = useState("");

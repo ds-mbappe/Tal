@@ -9,7 +9,6 @@ import {
   FlatList,
   RefreshControl,
   Image,
-  Share,
 } from "react-native";
 import { React, useCallback, useEffect, useRef, useState } from "react";
 import * as Icon from "react-native-feather";
@@ -29,7 +28,6 @@ import {
 import Modal from "react-native-modal";
 import { FontAwesome } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Search = ({ navigation }) => {
   const [search, setSearch] = useState("");
@@ -514,30 +512,7 @@ const Search = ({ navigation }) => {
           />
         </View>
       ) : (
-        <View style={{ flex: 1, backgroundColor: "white" }}>
-          <FlatList
-            contentContainerStyle={{}}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-            ref={reference}
-            data={posts}
-            keyExtractor={(item) => item.id}
-            ItemSeparatorComponent={() => {
-              return (
-                <View
-                  style={{
-                    width: "100%",
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#F1F2F2",
-                  }}
-                ></View>
-              );
-            }}
-            renderItem={PostItem}
-          />
-        </View>
+        <></>
       )}
     </SafeAreaView>
   );
