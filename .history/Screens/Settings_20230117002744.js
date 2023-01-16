@@ -25,12 +25,6 @@ const Settings = ({ navigation }) => {
     setModalVisibility(!modalVisibility);
   };
 
-  const signOff = async () => {
-    signOut(auth).then(() => {
-      setIsLoggedIn(false);
-    });
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -44,7 +38,7 @@ const Settings = ({ navigation }) => {
           borderBottomWidth: 1,
         }}
       >
-        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon.ChevronLeft
             style={{ marginStart: 10 }}
             width={25}

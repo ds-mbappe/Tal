@@ -13,24 +13,11 @@ import * as Icon from "react-native-feather";
 import { auth } from "../firebase";
 import { data } from "../data";
 import { Image } from "react-native";
-import { uuidv4 } from "@firebase/util";
 import { firestore } from "../firebase";
-import {
-  arrayUnion,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 
 const Conversation = ({ route, navigation }) => {
   const { userId } = route.params;
-
-  const chatId = uuidv4();
 
   const [message, setMessage] = useState("");
 
@@ -64,8 +51,7 @@ const Conversation = ({ route, navigation }) => {
         <View
           style={{
             borderRadius: 10,
-            backgroundColor:
-              item.sender === auth.currentUser.uid ? "#F7941D" : "gray",
+            backgroundColor: "#F7941D",
             paddingVertical: 5,
           }}
         >
@@ -105,7 +91,7 @@ const Conversation = ({ route, navigation }) => {
   };
 
   const sendMessage = async (message) => {
-    const chatRef = doc(firestore, "chats", "test");
+    const chatRef = doc(firestore, "chats", chatId);
     try {
       await updateDoc(chatRef, {
         messages: arrayUnion({
@@ -125,7 +111,7 @@ const Conversation = ({ route, navigation }) => {
   const getChatMessages = async () => {
     // Get current chat messages
     try {
-      const chatRef = doc(firestore, "chats", "test");
+      const chatRef = doc(firestore, "chats", chatId);
       const chatSnapshot = getDoc(chatRef);
       setChatMessages((await chatSnapshot).data().messages);
     } catch (error) {
@@ -133,32 +119,7 @@ const Conversation = ({ route, navigation }) => {
     }
   };
 
-  const setChatDataInFirestore = async () => {
-    const chatRef = doc(firestore, "chats", "test");
-    //   const lol = collection(firestore, "chats");
-    //   const lolQuery = query(lol, where(""))
-    try {
-      const chatDocument = await getDoc(chatRef);
-      if (chatDocument.exists()) {
-      } else {
-        try {
-          await setDoc(doc(firestore, "chats", "test"), {
-            participants: [auth.currentUser.uid, userId],
-            messages: [],
-          });
-          console.log("Document written succesffully");
-        } catch (e) {
-          console.error("Error adding document: ", e);
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const getData = async () => {
-    // Setup Chat data for Firestore
-    setChatDataInFirestore();
     // Get current chat user data
     try {
       const selectedUserDocRef = doc(firestore, "users", userId);
@@ -288,7 +249,6 @@ const Conversation = ({ route, navigation }) => {
                 flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
-                opacity: message === "" ? 0.5 : 1,
               }}
               disabled={message === "" ? true : false}
               onPress={() => sendMessage(message)}

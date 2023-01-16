@@ -27,7 +27,7 @@ const Settings = ({ navigation }) => {
 
   const signOff = async () => {
     signOut(auth).then(() => {
-      setIsLoggedIn(false);
+      //setIsLoggedIn(false);
     });
   };
 

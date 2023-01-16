@@ -26,9 +26,10 @@ const Settings = ({ navigation }) => {
   };
 
   const signOff = async () => {
-    signOut(auth).then(() => {
-      setIsLoggedIn(false);
-    });
+    setIsLoggedIn(false);
+    signOut(auth);
+    await AsyncStorage.removeItem("@token");
+    await AsyncStorage.removeItem("@userData");
   };
 
   return (
@@ -44,7 +45,7 @@ const Settings = ({ navigation }) => {
           borderBottomWidth: 1,
         }}
       >
-        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+        <TouchableOpacity onPress={() => navigation.nagvigate("Profile")}>
           <Icon.ChevronLeft
             style={{ marginStart: 10 }}
             width={25}

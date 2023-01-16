@@ -25,9 +25,11 @@ const Settings = ({ navigation }) => {
     setModalVisibility(!modalVisibility);
   };
 
-  const signOff = async () => {
-    signOut(auth).then(() => {
+  const signOff = () => {
+    signOut(auth).then(async () => {
       setIsLoggedIn(false);
+      await AsyncStorage.removeItem("@token");
+      await AsyncStorage.removeItem("@userData");
     });
   };
 
@@ -44,7 +46,7 @@ const Settings = ({ navigation }) => {
           borderBottomWidth: 1,
         }}
       >
-        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon.ChevronLeft
             style={{ marginStart: 10 }}
             width={25}
@@ -105,7 +107,10 @@ const Settings = ({ navigation }) => {
               <Text style={styles.buttonText}>A propos et aide</Text>
             </TouchableOpacity>
             <View style={styles.separator}></View>
-            <TouchableOpacity style={styles.buttonContainer} onPress={signOff}>
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={toggleModal}
+            >
               <Icon.Power
                 style={styles.icon}
                 width={25}
@@ -128,7 +133,7 @@ const Settings = ({ navigation }) => {
             </Text>
           </View>
         </View>
-        {/* <Modal onBackdropPress={toggleModal} isVisible={modalVisibility}>
+        <Modal onBackdropPress={toggleModal} isVisible={modalVisibility}>
           <View
             style={{
               width: "100%",
@@ -176,7 +181,7 @@ const Settings = ({ navigation }) => {
               </View>
             </View>
           </View>
-        </Modal> */}
+        </Modal>
       </ScrollView>
     </SafeAreaView>
   );

@@ -64,8 +64,7 @@ const Conversation = ({ route, navigation }) => {
         <View
           style={{
             borderRadius: 10,
-            backgroundColor:
-              item.sender === auth.currentUser.uid ? "#F7941D" : "gray",
+            backgroundColor: "#F7941D",
             paddingVertical: 5,
           }}
         >
@@ -105,9 +104,17 @@ const Conversation = ({ route, navigation }) => {
   };
 
   const sendMessage = async (message) => {
-    const chatRef = doc(firestore, "chats", "test");
+    const chatRef = doc(firestore, "chats", auth.currentUser.uid);
     try {
       await updateDoc(chatRef, {
+        messages: arrayUnion({
+          sender: auth.currentUser.uid,
+          receiver: userId,
+          createdAt: new Date().getTime(),
+          actualMessage: message,
+        }),
+      });
+      await updateDoc(doc(firestore, "chats", userId), {
         messages: arrayUnion({
           sender: auth.currentUser.uid,
           receiver: userId,
@@ -125,7 +132,7 @@ const Conversation = ({ route, navigation }) => {
   const getChatMessages = async () => {
     // Get current chat messages
     try {
-      const chatRef = doc(firestore, "chats", "test");
+      const chatRef = doc(firestore, "chats", chatId);
       const chatSnapshot = getDoc(chatRef);
       setChatMessages((await chatSnapshot).data().messages);
     } catch (error) {
@@ -144,6 +151,15 @@ const Conversation = ({ route, navigation }) => {
         try {
           await setDoc(doc(firestore, "chats", "test"), {
             participants: [auth.currentUser.uid, userId],
+            messages: [],
+          });
+          console.log("Document written succesffully");
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+        try {
+          await setDoc(doc(firestore, "chats", "test"), {
+            participants: [userId, auth.currentUser.uid],
             messages: [],
           });
           console.log("Document written succesffully");
@@ -288,7 +304,6 @@ const Conversation = ({ route, navigation }) => {
                 flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
-                opacity: message === "" ? 0.5 : 1,
               }}
               disabled={message === "" ? true : false}
               onPress={() => sendMessage(message)}

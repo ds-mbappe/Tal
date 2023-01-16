@@ -288,7 +288,6 @@ const Conversation = ({ route, navigation }) => {
                 flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
-                opacity: message === "" ? 0.5 : 1,
               }}
               disabled={message === "" ? true : false}
               onPress={() => sendMessage(message)}

@@ -26,9 +26,10 @@ const Settings = ({ navigation }) => {
   };
 
   const signOff = async () => {
-    signOut(auth).then(() => {
-      setIsLoggedIn(false);
-    });
+    setIsLoggedIn(false);
+    signOut(auth);
+    await AsyncStorage.removeItem("@token");
+    await AsyncStorage.removeItem("@userData");
   };
 
   return (

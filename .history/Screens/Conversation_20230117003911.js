@@ -65,7 +65,7 @@ const Conversation = ({ route, navigation }) => {
           style={{
             borderRadius: 10,
             backgroundColor:
-              item.sender === auth.currentUser.uid ? "#F7941D" : "gray",
+              item.sender === auth.currentUser.uid ? "#F7941D" : "white",
             paddingVertical: 5,
           }}
         >
@@ -223,6 +223,7 @@ const Conversation = ({ route, navigation }) => {
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
+            backgroundColor: "red",
           }}
         >
           <FlatList
@@ -232,6 +233,7 @@ const Conversation = ({ route, navigation }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
+              backgroundColor: "red",
             }}
             showsVerticalScrollIndicator={false}
             ref={reference}
@@ -288,7 +290,6 @@ const Conversation = ({ route, navigation }) => {
                 flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
-                opacity: message === "" ? 0.5 : 1,
               }}
               disabled={message === "" ? true : false}
               onPress={() => sendMessage(message)}
