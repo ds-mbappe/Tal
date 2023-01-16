@@ -38,8 +38,7 @@ const Conversation = ({ route, navigation }) => {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          alignItems:
-            item.sender === auth.currentUser.uid ? "flex-end" : "flex-start",
+          alignItems: "flex-end",
           borderRadius: 10,
           marginStart: item.sender === auth.currentUser.uid ? 20 : 5,
           marginEnd: item.sender === userId ? 20 : 5,
@@ -48,33 +47,30 @@ const Conversation = ({ route, navigation }) => {
           //backgroundColor: "#F7941D",
         }}
       >
-        <View
+        <Text
           style={{
-            borderRadius: 10,
-            backgroundColor: "#F7941D",
+            fontSize: 16,
+            color: "black",
             paddingVertical: 5,
+            paddingHorizontal: 10,
+            borderRadius: 10,
+            borderColor: "black",
+            borderWidth: 1,
           }}
         >
-          <Text
-            style={{
-              fontSize: 16,
-              color: "black",
-              paddingHorizontal: 10,
-            }}
-          >
-            {item.actualMessage}
-          </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              color: "black",
-              paddingHorizontal: 10,
-              alignSelf: "flex-end",
-            }}
-          >
-            {item.createdAt}
-          </Text>
-        </View>
+          {item.actualMessage}
+        </Text>
+        <Text
+          style={{
+            fontSize: 12,
+            color: "black",
+            paddingHorizontal: 10,
+            borderColor: "black",
+            borderWidth: 1,
+          }}
+        >
+          {item.createdAt}
+        </Text>
       </View>
     );
   };

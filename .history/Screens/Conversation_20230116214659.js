@@ -33,48 +33,21 @@ const Conversation = ({ route, navigation }) => {
     return (
       <View
         style={{
-          //paddingVertical: 5,
-          //paddingHorizontal: 10,
+          padding: 5,
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          alignItems:
-            item.sender === auth.currentUser.uid ? "flex-end" : "flex-start",
+          alignItems: "flex-end",
           borderRadius: 10,
           marginStart: item.sender === auth.currentUser.uid ? 20 : 5,
           marginEnd: item.sender === userId ? 20 : 5,
-          //borderColor: "red",
-          //borderWidth: 1,
-          //backgroundColor: "#F7941D",
+          backgroundColor: "#F7941D",
         }}
       >
-        <View
-          style={{
-            borderRadius: 10,
-            backgroundColor: "#F7941D",
-            paddingVertical: 5,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 16,
-              color: "black",
-              paddingHorizontal: 10,
-            }}
-          >
-            {item.actualMessage}
-          </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              color: "black",
-              paddingHorizontal: 10,
-              alignSelf: "flex-end",
-            }}
-          >
-            {item.createdAt}
-          </Text>
-        </View>
+        <Text style={{ fontSize: 16, color: "white" }}>
+          {item.actualMessage}
+        </Text>
+        <Text style={{ fontSize: 14, color: "black" }}>{item.createdAt}</Text>
       </View>
     );
   };
@@ -84,7 +57,7 @@ const Conversation = ({ route, navigation }) => {
       <View
         style={{
           width: "100%",
-          height: 5,
+          height: 2,
         }}
       ></View>
     );
@@ -188,11 +161,13 @@ const Conversation = ({ route, navigation }) => {
         >
           <FlatList
             contentContainerStyle={{
+              //width: "100%",
               marginTop: 25,
               marginBottom: 25,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
+              //   display: "flex",
+              //   flexDirection: "column",
+              //   justifyContent: "center",
+              //   alignItems: "flex-end",
             }}
             showsVerticalScrollIndicator={false}
             ref={reference}

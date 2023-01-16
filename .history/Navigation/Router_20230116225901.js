@@ -278,15 +278,6 @@ const ProfileStack = ({ navigation, route }) => {
         }}
       />
       <Stack.Screen
-        name="Settings"
-        component={Settings}
-        options={{
-          title: "Paramètres",
-          headerShown: false,
-          headerBackTitleVisible: false,
-        }}
-      />
-      <Stack.Screen
         name="TakePictureProfile"
         component={TakePictureProfile}
         options={{

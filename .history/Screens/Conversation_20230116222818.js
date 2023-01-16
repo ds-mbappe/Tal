@@ -58,7 +58,7 @@ const Conversation = ({ route, navigation }) => {
           <Text
             style={{
               fontSize: 16,
-              color: "black",
+              color: "white",
               paddingHorizontal: 10,
             }}
           >

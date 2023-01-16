@@ -247,7 +247,7 @@ const MessagesStack = ({ navigation, route }) => {
 const ProfileStack = ({ navigation, route }) => {
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    const tabHiddenRoutes = ["CommentPage", "TakePictureProfile"];
+    const tabHiddenRoutes = ["Settings", "CommentPage", "TakePictureProfile"];
     if (tabHiddenRoutes.includes(routeName)) {
       navigation.setOptions({
         tabBarStyle: { position: "absolute", display: "none" },

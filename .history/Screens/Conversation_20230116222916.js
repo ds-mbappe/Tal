@@ -38,8 +38,7 @@ const Conversation = ({ route, navigation }) => {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          alignItems:
-            item.sender === auth.currentUser.uid ? "flex-end" : "flex-start",
+          alignItems: "flex-start",
           borderRadius: 10,
           marginStart: item.sender === auth.currentUser.uid ? 20 : 5,
           marginEnd: item.sender === userId ? 20 : 5,

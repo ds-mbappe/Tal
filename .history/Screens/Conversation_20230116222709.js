@@ -48,17 +48,12 @@ const Conversation = ({ route, navigation }) => {
           //backgroundColor: "#F7941D",
         }}
       >
-        <View
-          style={{
-            borderRadius: 10,
-            backgroundColor: "#F7941D",
-            paddingVertical: 5,
-          }}
-        >
+        <View style={{ borderRadius: 10, backgroundColor: "#F7941D" }}>
           <Text
             style={{
               fontSize: 16,
               color: "black",
+              paddingVertical: 5,
               paddingHorizontal: 10,
             }}
           >
@@ -68,7 +63,6 @@ const Conversation = ({ route, navigation }) => {
             style={{
               fontSize: 12,
               color: "black",
-              paddingHorizontal: 10,
               alignSelf: "flex-end",
             }}
           >
